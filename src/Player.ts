@@ -48,12 +48,16 @@ export default class Player {
         const waiters: Promise<void>[] = [];
 
         for (let i = 0; i < this.count; i++) {
+            const player = this.players[i];
+
             waiters[i] = new Promise((resolve) => {
                 if (midi[i]) {
-                    this.players[i].addEventListener("canplaythrough", event => {
+                    const listener = () => {
+                        player.removeEventListener("canplaythrough",listener);
                         resolve(null);
-                    });
-                    this.players[i].src = "https://raw.githubusercontent.com/friendlyted/audiquiz-sounds/refs/heads/main/pitch_" + midi[i] + ".mp3";
+                    };
+                    player.addEventListener("canplaythrough", listener);
+                    player.src = "https://raw.githubusercontent.com/friendlyted/audiquiz-sounds/refs/heads/main/pitch_" + midi[i] + ".mp3";
                 } else {
                     resolve(null);
                 }
