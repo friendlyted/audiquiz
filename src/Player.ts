@@ -38,7 +38,7 @@ export default class Player {
             this.players[i].currentTime = 0;
 
             if (midi[i]) {
-                this.players[i].src = "https://github.com/friendlyted/audiquiz-sounds/raw/refs/heads/main/pitch_" + midi[i] + ".mp3"
+                this.players[i].src = "https://raw.githubusercontent.com/friendlyted/audiquiz-sounds/refs/heads/main/pitch_" + midi[i] + ".mp3"
             } else {
                 this.players[i].removeAttribute('src')
             }
