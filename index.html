@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Audiquiz</title>
+        <link rel="stylesheet" href="./index.css"/>
+        <script type="text/javascript">
+            ezTS_main = "./src/index.ts";
+            ezTS_wait_for_debugger = true;
+        </script>
+        <script type="text/javascript" src="https://friendlyted.github.io/ezTS/loader/ezTS.js"></script>
+    </head>
+    <body>
+        <div class="container">
+            <div class="content-row">
+                <div id="main">
+                    MAIN
+                </div>
+                <div id="help">
+                    <h2>Памятка</h2>
+                    <br/>
+                    <div class="spoiler">
+                        <div class="spoiler-title">
+                            <div class="spoiler-icon"></div>
+                            <h4>Кнопки</h4>
+                        </div>
+                        <div class="spoiler-content">
+                            <p class="spoiler-p">
+                                <img src="./media/forward.svg"/>
+                                <span>Загадывает очередной интервал или аккорд.</span>
+                            </p>
+                            <p class="spoiler-p">
+                                <img src="./media/repeat.svg"/>
+                                <span>Повторно играет загаданный интервал или аккорд.</span>
+                            </p>
+                            <p class="spoiler-p">
+                                <img src="./media/repeat1.svg"/>
+                                <span>Повторно играет загаданный интервал или аккорд в первой октаве.</span>
+                            </p>
+                            <p class="spoiler-p">
+                                <img src="./media/melodic.svg"/>
+                                <span>Повторно играет загаданный интервал или аккорд в мелодическом исполнении, то есть по одной ноте.</span>
+                            </p>
+                            <p class="spoiler-p">
+                                <img src="./media/giveup.svg"/>
+                                <span>Показывает правильный вариант ответа.</span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="spoiler">
+                        <div class="spoiler-title">
+                            <div class="spoiler-icon"></div>
+                            <h4>Интервалы</h4>
+                        </div>
+                        <div class="spoiler-content">
+                            <p class="spoiler-p">
+                                <button class="hear" onclick="play(Variant.interval.i1)">ч1</button>
+                                <span>Чистая прима.</span>
+                            </p>
+                            <p class="spoiler-p">
+                                <button class="hear" onclick="play(Variant.interval.i2.m2)">м2</button>
+                                <span>Малая секунда.</span>
+                            </p>
+                            <p class="spoiler-p">
+                                <button class="hear" onclick="play(Variant.interval.i2.b2)">б2</button>
+                                <span>Большая секунда.</span>
+                            </p>
+                            <p class="spoiler-p">
+                                <button class="hear" onclick="play(Variant.interval.i3.m3)">м3</button>
+                                <span>Малая терция.</span>
+                            </p>
+                            <p class="spoiler-p">
+                                <button class="hear" onclick="play(Variant.interval.i3.b3)">б3</button>
+                                <span>Большая терция.</span>
+                            </p>
+                            <p class="spoiler-p">
+                                <button class="hear" onclick="play(Variant.interval.i4)">ч4</button>
+                                <span>Чистая кварта.</span>
+                            </p>
+                            <p class="spoiler-p">
+                                <button class="hear" onclick="play(Variant.interval.iT)">тритон</button>
+                                <span>Тритон вне тональности.</span>
+                            </p>
+                            <p class="spoiler-p">
+                                <button class="hear" onclick="play(Variant.interval.i4a.i4a_dur)">ув4 > м6</button>
+                                <span>Увеличенная кварта (доманантовая) с разрешением в малую сексту в мажоре. Звучит одинаково с субдоминантовой увеличенной квартой в миноре.</span>
+                            </p>
+                            <p class="spoiler-p">
+                                <button class="hear" onclick="play(Variant.interval.i4a.i4a_moll)">ув4 > б6</button>
+                                <span>Увеличенная кварта (доманантовая) с разрешением в большую сексту в миноре.</span>
+                            </p>
+                            <p class="spoiler-p">
+                                <button class="hear" onclick="play(Variant.interval.i4a.i4a_durH)">ув4 > б6</button>
+                                <span>Увеличенная кварта (субдоминантовая) с разрешением в большую сексту в гармоническом мажоре.</span>
+                            </p>
+                            <p class="spoiler-p">
+                                <button class="hear" onclick="play(Variant.interval.i5d.d5_dur)">ум5 > б3</button>
+                                <span>Уменьшённая квинта (доманантовая) с разрешением в большую терцию в мажоре. Звучит одинаково с субдоминантовой уменьшённой квинтой в миноре.</span>
+                            </p>
+                            <p class="spoiler-p">
+                                <button class="hear" onclick="play(Variant.interval.i5d.d5_moll)">ум5 > м3</button>
+                                <span>Уменьшённая квинта (доманантовая) с разрешением в малую терцию в миноре.</span>
+                            </p>
+                            <p class="spoiler-p">
+                                <button class="hear" onclick="play(Variant.interval.i5d.d5_durH)">ум5 > м3</button>
+                                <span>Уменьшённая квинта (субдоминантовая) с разрешением в малую терцию в гармоническом мажоре.</span>
+                            </p>
+                            <p class="spoiler-p">
+                                <button class="hear" onclick="play(Variant.interval.i5)">ч5</button>
+                                <span>Чистая квинта.</span>
+                            </p>
+                            <p class="spoiler-p">
+                                <button class="hear" onclick="play(Variant.interval.i6.m6)">м6</button>
+                                <span>Малая секста.</span>
+                            </p>
+                            <p class="spoiler-p">
+                                <button class="hear" onclick="play(Variant.interval.i6.b6)">б6</button>
+                                <span>Большая секста.</span>
+                            </p>
+                            <p class="spoiler-p">
+                                <button class="hear" onclick="play(Variant.interval.i7.m7)">м7</button>
+                                <span>Малая септима.</span>
+                            </p>
+                            <p class="spoiler-p">
+                                <button class="hear" onclick="play(Variant.interval.i7.b7)">б7</button>
+                                <span>Большая септима.</span>
+                            </p>
+                            <p class="spoiler-p">
+                                <button class="hear" onclick="play(Variant.interval.i8)">ч8</button>
+                                <span>Чистая октава.</span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="spoiler">
+                        <div class="spoiler-title">
+                            <div class="spoiler-icon"></div>
+                            <h4>Трезвучия</h4>
+                        </div>
+                        <div class="spoiler-content">
+                            <p class="spoiler-p">
+                                <button class="hear" onclick="play(Variant.triad.tM.M53)">Б53</button>
+                                <span>Мажорное трезвучие.</span>
+                            </p>
+                            <p class="spoiler-p">
+                                <button class="hear" onclick="play(Variant.triad.tM.M6t)">Б6</button>
+                                <span>Мажорный секстаккорд.</span>
+                            </p>
+                            <p class="spoiler-p">
+                                <button class="hear" onclick="play(Variant.triad.tM.M64)">Б64</button>
+                                <span>Мажорный квартсекстаккорд.</span>
+                            </p>
+                            <p class="spoiler-p">
+                                <button class="hear" onclick="play(Variant.triad.tm.m53)">М53</button>
+                                <span>Минорное трезвучие.</span>
+                            </p>
+                            <p class="spoiler-p">
+                                <button class="hear" onclick="play(Variant.triad.tm.m6t)">М6</button>
+                                <span>Минорный секстаккорд.</span>
+                            </p>
+                            <p class="spoiler-p">
+                                <button class="hear" onclick="play(Variant.triad.tm.m64)">М64</button>
+                                <span>Минорный квартсекстаккорд.</span>
+                            </p>
+                            <p class="spoiler-p">
+                                <button class="hear" onclick="play(Variant.triad.td)">Ум53</button>
+                                <span>Уменьшённое трезвучие.</span>
+                            </p>
+                            <p class="spoiler-p">
+                                <button class="hear" onclick="play(Variant.triad.tA)">Ув53</button>
+                                <span>Увеличенное трезвучие.</span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="spoiler">
+                        <div class="spoiler-title">
+                            <div class="spoiler-icon"></div>
+                            <h4>Доминантовый септаккорд</h4>
+                        </div>
+                        <div class="spoiler-content">
+                            <p class="spoiler-p">
+                                <button class="hear" onclick="play(Variant.chord7_scale.D7.D7_dur)">D7 > T3</button>
+                                <span>Доминантовый септаккорд в мажоре с разрешением в тоническую терцию с утроенной примой.</span>
+                            </p>
+                            <p class="spoiler-p">
+                                <button class="hear" onclick="play(Variant.chord7_scale.D7.D7_moll)">D7 > t3</button>
+                                <span>Доминантовый септаккорд в миноре с разрешением в тоническую терцию с утроенной примой.</span>
+                            </p>
+                            <p class="spoiler-p">
+                                <button class="hear" onclick="play(Variant.chord7_scale.D7.D7_inversions.D65_dur)">D65 >
+                                    T53
+                                </button>
+                                <span>Доминантовый квинтсекстаккорд в мажоре с разрешением в тоническое трузвучие с удвоенной примой.</span>
+                            </p>
+                            <p class="spoiler-p">
+                                <button class="hear" onclick="play(Variant.chord7_scale.D7.D7_inversions.D65_moll)">D65
+                                    > t53
+                                </button>
+                                <span>Доминантовый квинтсекстаккорд в миноре с разрешением в тоническое трузвучие с удвоенной примой.</span>
+                            </p>
+                            <p class="spoiler-p">
+                                <button class="hear" onclick="play(Variant.chord7_scale.D7.D7_inversions.D43_dur)">D43 >
+                                    T53
+                                </button>
+                                <span>Доминантовый терцквартаккорд в мажоре с разрешением в развёрнутое тоническое трузвучие.</span>
+                            </p>
+                            <p class="spoiler-p">
+                                <button class="hear" onclick="play(Variant.chord7_scale.D7.D7_inversions.D43_moll)">D43
+                                    > t53
+                                </button>
+                                <span>Доминантовый терцквартаккорд в миноре с разрешением в развёрнутое тоническое трузвучие.</span>
+                            </p>
+                            <p class="spoiler-p">
+                                <button class="hear" onclick="play(Variant.chord7_scale.D7.D7_inversions.D2_dur)">D2 >
+                                    T6
+                                </button>
+                                <span>Доминантовый секундаккорд в мажоре с разрешением в тонический секстаккорд с удвоенной примой.</span>
+                            </p>
+                            <p class="spoiler-p">
+                                <button class="hear" onclick="play(Variant.chord7_scale.D7.D7_inversions.D2_moll)">D2 >
+                                    t6
+                                </button>
+                                <span>Доминантовый секундаккорд в миноре с разрешением в тонический секстаккорд с удвоенной примой.</span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="spoiler">
+                        <div class="spoiler-title">
+                            <div class="spoiler-icon"></div>
+                            <h4>Второй ступени септаккорд</h4>
+                        </div>
+                        <div class="spoiler-content">
+                            <p class="spoiler-p">
+                                <button class="hear" onclick="play(Variant.chord7_scale.II7.II7T.II7T_dur_7)">
+                                    II7 > T6
+                                </button>
+                                <span>Второй ступени септаккорд в мажоре с разрешением в тонический секстаккорд с удвоенной квинтой.</span>
+                            </p>
+                            <p class="spoiler-p">
+                                <button class="hear" onclick="play(Variant.chord7_scale.II7.II7T.II7T_durH_7)">
+                                    II7 > T6
+                                </button>
+                                <span>Второй ступени септаккорд в гармоническом мажоре с разрешением в тонический секстаккорд с удвоенной квинтой.</span>
+                            </p>
+                            <p class="spoiler-p">
+                                <button class="hear" onclick="play(Variant.chord7_scale.II7.II7T.II7T_moll_7)">
+                                    II7 > t6
+                                </button>
+                                <span>Второй ступени септаккорд в гармоническом миноре с разрешением в тонический секстаккорд с удвоенной квинтой.</span>
+                            </p>
+                            <p class="spoiler-p">
+                                <button class="hear" onclick="play(Variant.chord7_scale.II7.II7T.II7T_inversions.II7T_dur_65)">
+                                    II65 > T6
+                                </button>
+                                <span>Второй ступени квинтсекстаккорд в мажоре с разрешением в тонический секстаккорд с удвоенной примой.</span>
+                            </p>
+                            <p class="spoiler-p">
+                                <button class="hear" onclick="play(Variant.chord7_scale.II7.II7T.II7T_inversions.II7T_durH_65)">
+                                    II65 > T6
+                                </button>
+                                <span>Второй ступени квинтсекстаккорд в гармоническом мажоре с разрешением в тонический секстаккорд с удвоенной примой.</span>
+                            </p>
+                            <p class="spoiler-p">
+                                <button class="hear" onclick="play(Variant.chord7_scale.II7.II7T.II7T_inversions.II7T_moll_65)">
+                                    II65 > t6
+                                </button>
+                                <span>Второй ступени квинтсекстаккорд в гармоническом миноре с разрешением в тонический секстаккорд с удвоенной примой.</span>
+                            </p>
+                            <p class="spoiler-p">
+                                <button class="hear" onclick="play(Variant.chord7_scale.II7.II7T.II7T_inversions.II7T_dur_43)">
+                                    II43 > T64
+                                </button>
+                                <span>Второй ступени терцквартаккорд в мажоре с разрешением в тонический квартсекстаккорд с удвоенной терцией.</span>
+                            </p>
+                            <p class="spoiler-p">
+                                <button class="hear" onclick="play(Variant.chord7_scale.II7.II7T.II7T_inversions.II7T_durH_43)">
+                                    II43 > T64
+                                </button>
+                                <span>Второй ступени терцквартаккорд в гармоническом мажоре с разрешением в тонический квартсекстаккорд с удвоенной терцией.</span>
+                            </p>
+                            <p class="spoiler-p">
+                                <button class="hear" onclick="play(Variant.chord7_scale.II7.II7T.II7T_inversions.II7T_moll_43)">
+                                    II43 > t64
+                                </button>
+                                <span>Второй ступени терцквартаккорд в гармоническом миноре с разрешением в тонический квартсекстаккорд с удвоенной терцией.</span>
+                            </p>
+                            <p class="spoiler-p">
+                                <button class="hear" onclick="play(Variant.chord7_scale.II7.II7T.II7T_inversions.II7T_dur_2)">
+                                    II2 > T53
+                                </button>
+                                <span>Второй ступени секундаккорд в мажоре с разрешением в тоническое трезвучие с удвоенной терцией.</span>
+                            </p>
+                            <p class="spoiler-p">
+                                <button class="hear" onclick="play(Variant.chord7_scale.II7.II7T.II7T_inversions.II7T_durH_2)">
+                                    II2 > T53
+                                </button>
+                                <span>Второй ступени секундаккорд в гармоническом мажоре с разрешением в тоническое трезвучие с удвоенной терцией.</span>
+                            </p>
+                            <p class="spoiler-p">
+                                <button class="hear" onclick="play(Variant.chord7_scale.II7.II7T.II7T_inversions.II7T_moll_2)">
+                                    II2 > t53
+                                </button>
+                                <span>Второй ступени секундаккорд в гармоническом миноре с разрешением в тоническое трезвучие с удвоенной терцией.</span>
+                            </p>
+
+                            <p class="spoiler-p">
+                                <button class="hear" onclick="play(Variant.chord7_scale.II7.II7D.II7D_dur_7)">
+                                    II7 > D43 > T53
+                                </button>
+                                <span>Второй ступени септаккорд в мажоре с разрешением в развёрнутое тоническое трузвучие через доминантовый терцквартаккорд.</span>
+                            </p>
+                            <p class="spoiler-p">
+                                <button class="hear" onclick="play(Variant.chord7_scale.II7.II7D.II7D_durH_7)">
+                                    II7 > D43 > T53
+                                </button>
+                                <span>Второй ступени септаккорд в гармоническом мажоре с разрешением в развёрнутое тоническое трузвучие через доминантовый терцквартаккорд.</span>
+                            </p>
+                            <p class="spoiler-p">
+                                <button class="hear" onclick="play(Variant.chord7_scale.II7.II7D.II7D_moll_7)">
+                                    II7 > D43 > t53
+                                </button>
+                                <span>Второй ступени септаккорд в миноре с разрешением в развёрнутое тоническое трузвучие через доминантовый терцквартаккорд.</span>
+                            </p>
+
+                            <p class="spoiler-p">
+                                <button class="hear" onclick="play(Variant.chord7_scale.II7.II7D.II7D_inversions.II7D_dur_65)">
+                                    II65 > D2 > T6
+                                </button>
+                                <span>Второй ступени квинтсекстаккорд в мажоре с разрешением в тонический секстаккорд с удвоенной примой через доминантовый секундаккорд.</span>
+                            </p>
+                            <p class="spoiler-p">
+                                <button class="hear" onclick="play(Variant.chord7_scale.II7.II7D.II7D_inversions.II7D_durH_65)">
+                                    II65 > D2 > T6
+                                </button>
+                                <span>Второй ступени квинтсекстаккорд в гармоническом мажоре с тонический секстаккорд с удвоенной примой через доминантовый секундаккорд.</span>
+                            </p>
+                            <p class="spoiler-p">
+                                <button class="hear" onclick="play(Variant.chord7_scale.II7.II7D.II7D_inversions.II7D_moll_65)">
+                                    II65 > D2 > t6
+                                </button>
+                                <span>Второй ступени квинтсекстаккорд в миноре с разрешением в тонический секстаккорд с удвоенной примой через доминантовый секундаккорд.</span>
+                            </p>
+
+                            <p class="spoiler-p">
+                                <button class="hear" onclick="play(Variant.chord7_scale.II7.II7D.II7D_inversions.II7D_dur_43)">
+                                    II43 > D7 > T3
+                                </button>
+                                <span>Второй ступени терцквартаккорд в мажоре с разрешением в тоническую терцию с утроенной примой через доминантовый септаккорд.</span>
+                            </p>
+                            <p class="spoiler-p">
+                                <button class="hear" onclick="play(Variant.chord7_scale.II7.II7D.II7D_inversions.II7D_durH_43)">
+                                    II43 > D7 > T3
+                                </button>
+                                <span>Второй ступени терцквартаккорд в гармоническом мажоре с тоническую терцию с утроенной примой через доминантовый септаккорд.</span>
+                            </p>
+                            <p class="spoiler-p">
+                                <button class="hear" onclick="play(Variant.chord7_scale.II7.II7D.II7D_inversions.II7D_moll_43)">
+                                    II43 > D7 > t3
+                                </button>
+                                <span>Второй ступени терцквартаккорд в миноре с разрешением в тоническую терцию с утроенной примой через доминантовый септаккорд.</span>
+                            </p>
+
+                            <p class="spoiler-p">
+                                <button class="hear" onclick="play(Variant.chord7_scale.II7.II7D.II7D_inversions.II7D_dur_2)">
+                                    II2 > D65 > T53
+                                </button>
+                                <span>Второй ступени секундаккорд в мажоре с разрешением в тоническое трузвучие с удвоенной примой через доминантовый квинтсекстаккорд.</span>
+                            </p>
+                            <p class="spoiler-p">
+                                <button class="hear" onclick="play(Variant.chord7_scale.II7.II7D.II7D_inversions.II7D_durH_2)">
+                                    II2 > D65 > T53
+                                </button>
+                                <span>Второй ступени секундаккорд в гармоническом мажоре с разрешением в тоническое трузвучие с удвоенной примой через доминантовый квинтсекстаккорд.</span>
+                            </p>
+                            <p class="spoiler-p">
+                                <button class="hear" onclick="play(Variant.chord7_scale.II7.II7D.II7D_inversions.II7D_moll_2)">
+                                    II2 > D65 > t53
+                                </button>
+                                <span>Второй ступени секундаккорд в миноре с разрешением в тоническое трузвучие с удвоенной примой через доминантовый квинтсекстаккорд.</span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="spoiler">
+                        <div class="spoiler-title">
+                            <div class="spoiler-icon"></div>
+                            <h4>Вводный септаккорд</h4>
+                        </div>
+                        <div class="spoiler-content">
+                            <p class="spoiler-p">
+                                <button class="hear" onclick="play(Variant.chord7_scale.VII7.VII7D.VII7D_dur_7)">
+                                    МVII7 > D65 > T53
+                                </button>
+                                <span>Малный вводный септаккорд в мажоре с разрешением в тоническое трезвучие с удвоенной примой через доминантовый квинтсекстаккорд.</span>
+                            </p>
+                        </div>
+                        <div class="spoiler-content">
+                            <p class="spoiler-p">
+                                <button class="hear" onclick="play(Variant.chord7_scale.VII7.VII7D.VII7D_durH_7)">
+                                    УмVII7 > D65 > T53
+                                </button>
+                                <span>Уменьшенный вводный септаккорд в гармоническом мажоре с разрешением в тоническое трезвучие с удвоенной примой через доминантовый квинтсекстаккорд.</span>
+                            </p>
+                        </div>
+                        <div class="spoiler-content">
+                            <p class="spoiler-p">
+                                <button class="hear" onclick="play(Variant.chord7_scale.VII7.VII7D.VII7D_moll_7)">
+                                    УмVII7 > D65 > t53
+                                </button>
+                                <span>Уменьшенный вводный септаккорд в гармоническом миноре с разрешением в тоническое трезвучие с удвоенной примой через доминантовый квинтсекстаккорд.</span>
+                            </p>
+                        </div>
+
+                        <div class="spoiler-content">
+                            <p class="spoiler-p">
+                                <button class="hear" onclick="play(Variant.chord7_scale.VII7.VII7D.VII7D_inversions.VII7D_dur_65)">
+                                    МVII65 > D43 > T53
+                                </button>
+                                <span>Малный вводный квинтсекстаккорд в мажоре с разрешением в развернутое тоническое трезвучие через доминантовый терцквартаккорд.</span>
+                            </p>
+                        </div>
+                        <div class="spoiler-content">
+                            <p class="spoiler-p">
+                                <button class="hear" onclick="play(Variant.chord7_scale.VII7.VII7D.VII7D_inversions.VII7D_durH_65)">
+                                    УмVII65 > D43 > T53
+                                </button>
+                                <span>Уменьшенный вводный квинтсекстаккорд в гармоническом мажоре с разрешением в развернутое тоническое трезвучие через доминантовый терцквартаккорд.</span>
+                            </p>
+                        </div>
+                        <div class="spoiler-content">
+                            <p class="spoiler-p">
+                                <button class="hear" onclick="play(Variant.chord7_scale.VII7.VII7D.VII7D_inversions.VII7D_moll_65)">
+                                    УмVII65 > D43 > t53
+                                </button>
+                                <span>Уменьшенный вводный квинтсекстаккорд в гармоническом миноре с разрешением в развернутое тоническое трезвучие через доминантовый терцквартаккорд.</span>
+                            </p>
+                        </div>
+
+                        <div class="spoiler-content">
+                            <p class="spoiler-p">
+                                <button class="hear" onclick="play(Variant.chord7_scale.VII7.VII7D.VII7D_inversions.VII7D_dur_43)">
+                                    МVII43 > D2 > T6
+                                </button>
+                                <span>Малный вводный терцквартаккорд в мажоре с разрешением в тонический секстаккорд с удвоенной примой через доминантовый секундаккорд.</span>
+                            </p>
+                        </div>
+                        <div class="spoiler-content">
+                            <p class="spoiler-p">
+                                <button class="hear" onclick="play(Variant.chord7_scale.VII7.VII7D.VII7D_inversions.VII7D_durH_43)">
+                                    УмVII43 > D2 > T6
+                                </button>
+                                <span>Уменьшенный вводный терцквартаккорд в гармоническом мажоре с разрешением в тонический секстаккорд с удвоенной примой через доминантовый секундаккорд.</span>
+                            </p>
+                        </div>
+                        <div class="spoiler-content">
+                            <p class="spoiler-p">
+                                <button class="hear" onclick="play(Variant.chord7_scale.VII7.VII7D.VII7D_inversions.VII7D_moll_43)">
+                                    УмVII43 > D2 > t6
+                                </button>
+                                <span>Уменьшенный вводный терцквартаккорд в гармоническом миноре с разрешением в тонический секстаккорд с удвоенной примой через доминантовый секундаккорд.</span>
+                            </p>
+                        </div>
+
+
+                        <div class="spoiler-content">
+                            <p class="spoiler-p">
+                                <button class="hear" onclick="play(Variant.chord7_scale.VII7.VII7D.VII7D_inversions.VII7D_dur_2)">
+                                    МVII2 > D7 > T3
+                                </button>
+                                <span>Малный вводный секундаккорд в мажоре с разрешением в тоническую терцию с утроенной примой через доминантовый септаккорд.</span>
+                            </p>
+                        </div>
+                        <div class="spoiler-content">
+                            <p class="spoiler-p">
+                                <button class="hear" onclick="play(Variant.chord7_scale.VII7.VII7D.VII7D_inversions.VII7D_durH_2)">
+                                    УмVII2 > D7 > T3
+                                </button>
+                                <span>Уменьшенный вводный секундаккорд в гармоническом мажоре с разрешением в тоническую терцию с утроенной примой через доминантовый септаккорд.</span>
+                            </p>
+                        </div>
+                        <div class="spoiler-content">
+                            <p class="spoiler-p">
+                                <button class="hear" onclick="play(Variant.chord7_scale.VII7.VII7D.VII7D_inversions.VII7D_moll_2)">
+                                    УмVII2 > D7 > t3
+                                </button>
+                                <span>Уменьшенный вводный секундаккорд в гармоническом миноре с разрешением в тоническую терцию с утроенной примой через доминантовый септаккорд.</span>
+                            </p>
+                        </div>
+
+                    </div>
+                    <div class="spoiler">
+                        <div class="spoiler-title">
+                            <div class="spoiler-icon"></div>
+                            <h4>Септаккорды вне тональности</h4>
+                        </div>
+                        <div class="spoiler-content">
+
+                        </div>
+                    </div>
+                </div>
+                <div id="settings">
+                    SETTINGS
+                </div>
+            </div>
+            <div class="menu-row">
+                <ul class="menu">
+                    <li id="menu-item-main" class="menu-item" onclick="showMain()"></li>
+                    <li id="menu-item-help" class="menu-item" onclick="showHelp()"></li>
+                    <li id="menu-item-settings" class="menu-item" onclick="showSettings()"></li>
+                </ul>
+            </div>
+        </div>
+        <script type="text/javascript">
+            let main = document.getElementById("main");
+            let help = document.getElementById("help");
+            let settings = document.getElementById("settings");
+
+            let mainItem = document.getElementById("menu-item-main");
+            let helpItem = document.getElementById("menu-item-help");
+            let settingsItem = document.getElementById("menu-item-settings");
+
+
+            function showMain() {
+                mainItem.classList.add("active")
+                helpItem.classList.remove("active")
+                settingsItem.classList.remove("active")
+                main.style.display = "inherit"
+                help.style.display = "none"
+                settings.style.display = "none"
+            }
+
+            function showHelp() {
+                mainItem.classList.remove("active")
+                helpItem.classList.add("active")
+                settingsItem.classList.remove("active")
+                main.style.display = "none"
+                help.style.display = "inherit"
+                settings.style.display = "none"
+            }
+
+            function showSettings() {
+                mainItem.classList.remove("active")
+                helpItem.classList.remove("active")
+                settingsItem.classList.add("active")
+                main.style.display = "none"
+                help.style.display = "none"
+                settings.style.display = "inherit"
+            }
+
+            document.addEventListener('DOMContentLoaded', function () {
+                showMain();
+            });
+        </script>
+
+        <script type="text/javascript">
+            document.addEventListener('DOMContentLoaded', function () {
+                let titles = document.getElementsByClassName("spoiler-title");
+
+                for (let i = 0; i < titles.length; i++) {
+                    window.addEventListener('resize', function () {
+                        let content = titles[i].nextElementSibling;
+                        if (content.style.maxHeight) {
+                            content.style.maxHeight = content.scrollHeight + "px"
+                        }
+                    })
+
+                    titles[i].addEventListener("click", function () {
+                        let spoiler = this.parentElement;
+                        spoiler.classList.toggle("active");
+
+                        let content = this.nextElementSibling;
+                        if (content.style.maxHeight) {
+                            content.style.maxHeight = null
+                        } else {
+                            content.style.maxHeight = content.scrollHeight + "px"
+                            setTimeout(function () {
+                                spoiler.scrollIntoView({
+                                    behavior: 'smooth'
+                                });
+                            }, 300)
+                        }
+
+                    });
+                }
+            });
+        </script>
+    </body>
+</html>
