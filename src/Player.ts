@@ -32,23 +32,41 @@ export default class Player {
         }, index === 0 ? 10 : 800);
     }
 
+    resetPlayers() {
+        for (let i = 0; i < this.count; i++) {
+            const player = this.players[i];
+            player.pause();
+            player.currentTime = 0;
+            player.removeAttribute('src');
+            player.load();
+        }
+    }
+
     playChord(midi) {
-        for (let i = 0; i < this.count; i++) {
-            this.players[i].pause();
-            this.players[i].currentTime = 0;
+        this.resetPlayers();
 
-            if (midi[i]) {
-                this.players[i].src = "https://raw.githubusercontent.com/friendlyted/audiquiz-sounds/refs/heads/main/pitch_" + midi[i] + ".mp3"
-            } else {
-                this.players[i].removeAttribute('src')
-            }
-        }
+        const waiters: Promise<void>[] = [];
 
         for (let i = 0; i < this.count; i++) {
-            if (this.players[i].src) {
-                this.players[i].play();
-            }
+            waiters[i] = new Promise((resolve) => {
+                if (midi[i]) {
+                    this.players[i].addEventListener("canplaythrough", event => {
+                        resolve(null);
+                    });
+                    this.players[i].src = "https://raw.githubusercontent.com/friendlyted/audiquiz-sounds/refs/heads/main/pitch_" + midi[i] + ".mp3";
+                } else {
+                    resolve(null);
+                }
+            });
         }
+
+        Promise.all(waiters).then(()=>{
+            for (let i = 0; i < this.count; i++) {
+                if (this.players[i].src) {
+                    this.players[i].play();
+                }
+            }
+        });
     }
 
     chordToMidi(startMidiPitch: MidiPitch, chord: Playable) {
