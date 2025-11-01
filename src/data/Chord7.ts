@@ -1,6 +1,7 @@
 import Interval from "./Interval.ts";
+import {MidiChord,MusicPitch, MidiAble} from "./MusicBase.ts";
 
-export default class Chord7 {
+export default class Chord7 implements MidiAble {
     public static readonly MMm7 = new Chord7(Interval.M3, Interval.M3, Interval.m3);
     public static readonly MMm65 = new Chord7(Interval.M3, Interval.m3, Interval.m2);
     public static readonly MMm43 = new Chord7(Interval.m3, Interval.m2, Interval.M3);
@@ -52,4 +53,10 @@ export default class Chord7 {
         this.upperInterval = upperInterval
     }
 
+    toMidi(base: MusicPitch): MidiChord {
+        const pitch3 = this.lowerInterval.addTo(base);
+        const pitch5 = this.middleInterval.addTo(pitch3);
+        const pitch7 = this.upperInterval.addTo(pitch5);
+        return new MidiChord(base, pitch3, pitch5, pitch7);
+    }
 }

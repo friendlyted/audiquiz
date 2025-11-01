@@ -1,4 +1,6 @@
-export default class Interval {
+import {MidiChord, MusicPitch, MidiAble} from "./MusicBase.ts";
+
+export default class Interval implements MidiAble {
     public static readonly p1 = new Interval(0, 0);
     public static readonly m2 = new Interval(1, 1);
     public static readonly M2 = new Interval(1, 2);
@@ -20,5 +22,23 @@ export default class Interval {
     constructor(stepCount: number, semitonesCount: number) {
         this.stepCount = stepCount;
         this.semitonesCount = semitonesCount;
+    }
+
+    addTo(base: MusicPitch, toUp = true): MusicPitch {
+        const baseMidi = base.midiPitch;
+        const targetMidi = baseMidi + this.semitonesCount * (toUp ? 1 : -1);
+
+        const pitches = base.lookupStepPitches(this.stepCount * (toUp ? 1 : -1));
+        for (let pitch of pitches) {
+            if (pitch.midiPitch === targetMidi) {
+                return pitch;
+            }
+        }
+        throw new Error("Out of music scope");
+    }
+
+    toMidi(base: MusicPitch): MidiChord {
+        const otherPitch = this.addTo(base);
+        return new MidiChord(base, otherPitch);
     }
 }

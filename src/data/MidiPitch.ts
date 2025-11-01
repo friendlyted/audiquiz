@@ -1,4 +1,4 @@
-enum MidiPitch {
+export enum MidiPitch {
     PITCH_21 = 21,
     PITCH_22,
     PITCH_23,
@@ -89,4 +89,3 @@ enum MidiPitch {
     PITCH_108,
 }
 
-export default MidiPitch;

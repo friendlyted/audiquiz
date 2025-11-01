@@ -1,151 +1,93 @@
-import MidiPitch from "./data/MidiPitch.ts";
-import Interval from "./data/Interval.ts";
-import MusicPitch from "./data/MusicPitch.ts";
-
-interface Playable {
-    semitonesCount: number;
-    lowerInterval: Interval;
-    middleInterval: Interval;
-    upperInterval: Interval;
-}
+import {MidiPitch} from "./data/MidiPitch.ts";
+import {MidiChord} from "./data/MusicBase.ts";
 
 export default class Player {
-    private readonly count: number;
-    private readonly players: HTMLAudioElement[];
-    private playingTimeout: number;
+    private readonly players: HTMLAudioElement[] = [];
+    private playingAbort: AbortController = null;
 
     constructor() {
-        this.count = 4;
-        this.players = [];
-        this.playingTimeout = null;
-
-        for (let i = 0; i < this.count; i++) {
+        const count = 4;
+        for (let i = 0; i < count; i++) {
             this.players.push(new Audio());
         }
     }
 
-    playMidi(midi, index) {
-        if (midi[index] === undefined) return;
-        this.playingTimeout = setTimeout(() => {
-            this.playChord([midi[index]]);
-            this.playMidi(midi, index + 1);
-        }, index === 0 ? 10 : 800);
-    }
-
-    resetPlayers() {
-        for (let i = 0; i < this.count; i++) {
-            const player = this.players[i];
-            player.pause();
-            player.currentTime = 0;
-            player.removeAttribute('src');
-            player.load();
+    private stop() {
+        if (this.playingAbort) {
+            this.playingAbort.abort();
         }
-    }
-
-    playChord(midi) {
-        this.resetPlayers();
-
-        const waiters: Promise<void>[] = [];
-
-        for (let i = 0; i < this.count; i++) {
-            const player = this.players[i];
-
-            waiters[i] = new Promise((resolve) => {
-                if (midi[i]) {
-                    const listener = () => {
-                        player.removeEventListener("canplaythrough",listener);
-                        resolve(null);
-                    };
-                    player.addEventListener("canplaythrough", listener);
-                    player.src = "https://raw.githubusercontent.com/friendlyted/audiquiz-sounds/refs/heads/main/pitch_" + midi[i] + ".mp3";
-                } else {
-                    resolve(null);
-                }
-            });
-        }
-
-        Promise.all(waiters).then(()=>{
-            for (let i = 0; i < this.count; i++) {
-                if (this.players[i].src) {
-                    this.players[i].play();
-                }
+        this.players.forEach(player => {
+            try {
+                player.pause();
+                player.currentTime = 0;
+                player.removeAttribute('src');
+                player.load();
+            } catch (ex) {
             }
         });
     }
 
-    chordToMidi(startMidiPitch: MidiPitch, chord: Playable) {
-        let next = startMidiPitch;
-        let midi = [next];
+    private async playChord(midi: MidiPitch[]) {
+        await Promise.all(this.players.map((player, i) =>
+            Player.loadSound(player, midi[i])
+        ));
 
-        if (chord.semitonesCount) {
-            midi.push(next + chord.semitonesCount);
-            return midi;
-        }
-        if (chord.lowerInterval) {
-            next += chord.lowerInterval.semitonesCount;
-            midi.push(next);
-        }
-        if (chord.middleInterval) {
-            next += chord.middleInterval.semitonesCount;
-            midi.push(next);
-        }
-        if (chord.upperInterval) {
-            next += chord.upperInterval.semitonesCount;
-            midi.push(next);
-        }
-        return midi;
+        await Promise.all(this.players.map((player) =>
+            player.play().catch((err) => {
+            })
+        ));
     }
 
-    playChords(startPitch, chords) {
-        if (this.playingTimeout) {
-            clearTimeout(this.playingTimeout);
+    async playChords(chords: MidiChord[]) {
+        this.stop();
+        this.playingAbort = new AbortController();
+        const signal = this.playingAbort.signal;
+
+        for (let chord of chords) {
+            if (signal.aborted) return;
+            await this.playChord(chord.midi);
+            await new Promise(resolve => setTimeout(() => resolve(null), 1500))
         }
-        let startMidiPitch = startPitch.midiPitch;
-
-        this.playingTimeout = setTimeout(() => {
-            let chord1Midi = this.chordToMidi(startMidiPitch, chords[0])
-            this.playChord(chord1Midi);
-
-
-            if (chords[2] === undefined) return;
-
-            this.playingTimeout = setTimeout(() => {
-                startMidiPitch += chords[2];
-                let chord2Midi = this.chordToMidi(startMidiPitch, chords[3])
-                this.playChord(chord2Midi);
-
-                if (chords[5] === undefined) return;
-
-                this.playingTimeout = setTimeout(() => {
-                    startMidiPitch += chords[5];
-                    let chord3Midi = this.chordToMidi(startMidiPitch, chords[6])
-                    this.playChord(chord3Midi);
-                }, 1400);
-            }, 1400)
-        }, 10);
     }
 
-    playMelodic(startPitch: MusicPitch, chords) {
-        if (this.playingTimeout) {
-            clearTimeout(this.playingTimeout);
-        }
+    //
+    // playMelodic(startPitch: MusicPitch, chords) {
+    //     this.stop();
+    //
+    //     let startMidiPitch = startPitch.midiPitch;
+    //
+    //     let midi: MidiPitch[] = []
+    //     let chord1 = this.chordToMidi(startMidiPitch, chords[0])
+    //     midi = midi.concat(chord1);
+    //     if (chords[2] !== undefined) {
+    //         startMidiPitch += chords[2];
+    //         let chord2 = this.chordToMidi(startMidiPitch, chords[3])
+    //         midi = midi.concat(chord2);
+    //     }
+    //     if (chords[5] !== undefined) {
+    //         startMidiPitch += chords[5];
+    //         let chord3 = this.chordToMidi(startMidiPitch, chords[6])
+    //         midi = midi.concat(chord3);
+    //     }
+    //
+    //     this.playMidi(midi, 0);
+    // }
 
-        let startMidiPitch = startPitch.midiPitch;
 
-        let midi: MidiPitch[] = []
-        let chord1 = this.chordToMidi(startMidiPitch, chords[0])
-        midi = midi.concat(chord1);
-        if (chords[2] !== undefined) {
-            startMidiPitch += chords[2];
-            let chord2 = this.chordToMidi(startMidiPitch, chords[3])
-            midi = midi.concat(chord2);
+    private static async loadSound(player: HTMLAudioElement, midiPitch: MidiPitch) {
+        if (midiPitch) {
+            await new Promise(resolve => {
+                const listener = () => {
+                    player.removeEventListener("canplaythrough", listener);
+                    resolve(null);
+                };
+                player.addEventListener("canplaythrough", listener);
+                player.src = this.createSoundUrl(midiPitch);
+            });
         }
-        if (chords[5] !== undefined) {
-            startMidiPitch += chords[5];
-            let chord3 = this.chordToMidi(startMidiPitch, chords[6])
-            midi = midi.concat(chord3);
-        }
+    }
 
-        this.playMidi(midi, 0);
+    private static createSoundUrl(midi: number) {
+        return `https://raw.githubusercontent.com/friendlyted/audiquiz-sounds/refs/heads/main/pitch_${midi}.mp3`;
     }
 }
