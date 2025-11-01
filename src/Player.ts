@@ -13,14 +13,11 @@ export default class Player {
     }
 
     private stop() {
-        if (this.playingAbort) {
-            this.playingAbort.abort();
-        }
         this.players.forEach(player => {
             try {
                 player.pause();
                 player.currentTime = 0;
-                player.removeAttribute('src');
+                player.src = "";
                 player.load();
             } catch (ex) {
             }
@@ -28,23 +25,28 @@ export default class Player {
     }
 
     private async playChord(midi: MidiPitch[]) {
-        await Promise.all(this.players.map((player, i) =>
-            Player.loadSound(player, midi[i])
-        ));
+        this.stop();
 
-        await Promise.all(this.players.map((player) =>
-            player.play().catch((err) => {
-            })
-        ));
+        const activePlayers = this.players.slice(0, midi.length);
+
+        await Promise.all(
+            activePlayers.map((player, i) => Player.loadSound(player, midi[i]))
+        );
+        await Promise.all(
+            activePlayers.map(p => p.play())
+        );
     }
 
     async playChords(chords: MidiChord[]) {
-        this.stop();
+        if (this.playingAbort) {
+            this.playingAbort.abort();
+        }
         this.playingAbort = new AbortController();
         const signal = this.playingAbort.signal;
 
         for (let chord of chords) {
             if (signal.aborted) return;
+
             await this.playChord(chord.midi);
             await new Promise(resolve => setTimeout(() => resolve(null), 1500))
         }
