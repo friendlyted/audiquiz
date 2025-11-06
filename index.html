@@ -5,11 +5,11 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Audiquiz</title>
         <link rel="stylesheet" href="./index.css"/>
-        <script type="text/javascript">
-            ezTS_main = "./src/index.ts";
-            ezTS_wait_for_debugger = true;
+        <script type="module">
+            import {ezStartTS} from "https://friendlyted.github.io/ezTS/loader/front.js";
+
+            ezStartTS({entryPointFile: "./src/index.ts"})
         </script>
-        <script type="text/javascript" src="https://friendlyted.github.io/ezTS/loader/ezTS.js"></script>
     </head>
     <body>
         <div class="container">
